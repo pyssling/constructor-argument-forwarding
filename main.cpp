@@ -1,9 +1,12 @@
 #include <iostream>
 
-  template< class T> class mixin :
+  template< class T> struct mixin :
      public T
   {
-
+    template <class ... Args> mixin( Args ... args ) :
+      T( std::forward<Args>( args ) ... )
+    {
+    }
   };
 
 
@@ -21,13 +24,14 @@ int main(int argc, char *argv[])
     int test_;
   };
 
-  struct Derived : public Base
+  struct Derived : public mixin< Base >
   {
-    Derived( int test) : Base(test)
+    Derived( int test) : mixin(test)
     {
     }
   };
 
   Derived derived(5);
-  
+
+  std::cerr << "Derived test_ : " << derived.test_ << "\n";
 }
